@@ -95,12 +95,21 @@ UPGRADE FROM 2.x to 3.0
    been removed in favor of `Definition::setFactory()`. Services defined using
    YAML or XML use the same syntax as configurators.
 
+ * Synchronized services are deprecated and the following methods have been
+   removed: `ContainerBuilder::synchronize()`, `Definition::isSynchronized()`,
+   and `Definition::setSynchronized()`.
+
 ### EventDispatcher
 
  * The interface `Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcherInterface`
    extends `Symfony\Component\EventDispatcher\EventDispatcherInterface`.
 
 ### Form
+
+ * The method `AbstractType::setDefaultOptions(OptionsResolverInterface $resolver)` and
+   `AbstractTypeExtension::setDefaultOptions(OptionsResolverInterface $resolver)` have been
+   renamed. You should use `AbstractType::configureOptions(OptionsResolver $resolver)` and
+   `AbstractTypeExtension::configureOptions(OptionsResolver $resolver)` instead.
 
  * The methods `Form::bind()` and `Form::isBound()` were removed. You should
    use `Form::submit()` and `Form::isSubmitted()` instead.
@@ -975,6 +984,22 @@ UPGRADE FROM 2.x to 3.0
    ```php
    $parameters = $violation->getParameters();
    $plural = $violation->getPlural();
+   ```
+
+ * The class `Symfony\Component\Validator\DefaultTranslator` was removed. You
+   should use `Symfony\Component\Translation\IdentityTranslator` instead.
+
+   Before:
+
+   ```php
+   $translator = new \Symfony\Component\Validator\DefaultTranslator();
+   ```
+
+   After:
+
+   ```php
+   $translator = new \Symfony\Component\Translation\IdentityTranslator();
+   $translator->setLocale('en');
    ```
 
 ### Yaml

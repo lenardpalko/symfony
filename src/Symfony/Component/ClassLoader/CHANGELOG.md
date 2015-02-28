@@ -1,14 +1,12 @@
 CHANGELOG
 =========
 
-2.7.0
------
-
- * The UniversalClassLoader class has been deprecated in favor of ClassLoader class
-
 2.4.0
 -----
 
+ * deprecated the UniversalClassLoader in favor of the ClassLoader class instead
+ * deprecated the ApcUniversalClassLoader in favor of the ApcClassLoader class instead
+ * deprecated the DebugUniversalClassLoader in favor of the DebugClassLoader class from the Debug component
  * deprecated the DebugClassLoader as it has been moved to the Debug component instead
 
 2.3.0

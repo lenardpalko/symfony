@@ -41,23 +41,23 @@ class ServerStartCommand extends ServerCommand
             ->setHelp(<<<EOF
 The <info>%command.name%</info> runs PHP's built-in web server:
 
-  <info>%command.full_name%</info>
+  <info>php %command.full_name%</info>
 
 To change the default bind address and the default port use the <info>address</info> argument:
 
-  <info>%command.full_name% 127.0.0.1:8080</info>
+  <info>php %command.full_name% 127.0.0.1:8080</info>
 
 To change the default document root directory use the <info>--docroot</info> option:
 
-  <info>%command.full_name% --docroot=htdocs/</info>
+  <info>php %command.full_name% --docroot=htdocs/</info>
 
 If you have a custom document root directory layout, you can specify your own
 router script using the <info>--router</info> option:
 
-  <info>%command.full_name% --router=app/config/router.php</info>
+  <info>php %command.full_name% --router=app/config/router.php</info>
 
-Specifying a router script is required when the used environment is not "dev" or
-"prod".
+Specifying a router script is required when the used environment is not <comment>"dev"</comment> or
+<comment>"prod"</comment>.
 
 See also: http://www.php.net/manual/en/features.commandline.webserver.php
 
@@ -71,11 +71,6 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (defined('HHVM_VERSION')) {
-            $output->writeln('<error>This command is not supported on HHVM.</error>');
-
-            return 1;
-        }
         if (!extension_loaded('pcntl')) {
             $output->writeln('<error>This command needs the pcntl extension to run.</error>');
             $output->writeln('You can either install it or use the <info>server:run</info> command instead to run the built-in web server.');
@@ -96,6 +91,19 @@ EOF
         }
 
         $env = $this->getContainer()->getParameter('kernel.environment');
+        $address = $input->getArgument('address');
+
+        if (false === strpos($address, ':')) {
+            $output->writeln('The address has to be of the form <comment>bind-address:port</comment>.');
+
+            return 1;
+        }
+
+        if ($this->isOtherServerProcessRunning($address)) {
+            $output->writeln(sprintf('<error>A process is already listening on http://%s.</error>', $address));
+
+            return 1;
+        }
 
         if ('prod' === $env) {
             $output->writeln('<error>Running PHP built-in server in production environment is NOT recommended!</error>');
@@ -108,8 +116,6 @@ EOF
 
             return 1;
         }
-
-        $address = $input->getArgument('address');
 
         if ($pid > 0) {
             $output->writeln(sprintf('<info>Web server listening on http://%s</info>', $address));
@@ -147,6 +153,27 @@ EOF
 
             sleep(1);
         }
+    }
+
+    private function isOtherServerProcessRunning($address)
+    {
+        $lockFile = $this->getLockFile($address);
+
+        if (file_exists($lockFile)) {
+            return true;
+        }
+
+        list($hostname, $port) = explode(':', $address);
+
+        $fp = @fsockopen($hostname, $port, $errno, $errstr, 5);
+
+        if (false !== $fp) {
+            fclose($fp);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

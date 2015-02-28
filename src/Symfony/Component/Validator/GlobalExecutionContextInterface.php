@@ -11,8 +11,6 @@
 
 namespace Symfony\Component\Validator;
 
-trigger_error('Symfony\Component\Validator\GlobalExecutionContextInterface was deprecated in version 2.5 and will be removed in version 3.0. Please use Symfony\Component\Validator\Context\ExecutionContextInterface instead', E_USER_DEPRECATED);
-
 /**
  * Stores the node-independent state of a validation run.
  *
@@ -29,7 +27,7 @@ trigger_error('Symfony\Component\Validator\GlobalExecutionContextInterface was d
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  *
- * @deprecated Deprecated since version 2.5, to be removed in Symfony 3.0.
+ * @deprecated since version 2.5, to be removed in 3.0.
  *             Use {@link Context\ExecutionContextInterface} instead.
  */
 interface GlobalExecutionContextInterface
@@ -46,7 +44,7 @@ interface GlobalExecutionContextInterface
      *
      * @return mixed The root value.
      *
-     * @see ExecutionContextInterface::getRoot
+     * @see ExecutionContextInterface::getRoot()
      */
     public function getRoot();
 

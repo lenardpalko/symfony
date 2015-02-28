@@ -25,7 +25,7 @@ use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToTimestampTra
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToRfc3339Transformer;
 use Symfony\Component\Form\Extension\Core\DataTransformer\ArrayToPartsTransformer;
 use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateTimeType extends AbstractType
 {
@@ -37,7 +37,7 @@ class DateTimeType extends AbstractType
      * This is not quite the HTML5 format yet, because ICU lacks the
      * capability of parsing and generating RFC 3339 dates, which
      * are like the below pattern but with a timezone suffix. The
-     * timezone suffix is
+     * timezone suffix is.
      *
      *  * "Z" for UTC
      *  * "(-|+)HH:mm" for other timezones (note the colon!)
@@ -200,7 +200,7 @@ class DateTimeType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $compound = function (Options $options) {
             return $options['widget'] !== 'single_text';
@@ -242,7 +242,7 @@ class DateTimeType extends AbstractType
 
         // Don't add some defaults in order to preserve the defaults
         // set in DateType and TimeType
-        $resolver->setOptional(array(
+        $resolver->setDefined(array(
             'empty_value', // deprecated
             'placeholder',
             'years',

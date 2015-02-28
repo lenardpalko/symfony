@@ -62,7 +62,7 @@ class ExceptionController
 
         $code = $exception->getStatusCode();
 
-        return new Response($this->twig->render(
+        return Response::create($this->twig->render(
             $this->findTemplate($request, $request->getRequestFormat(), $code, $showException),
             array(
                 'status_code' => $code,
@@ -71,11 +71,11 @@ class ExceptionController
                 'logger' => $logger,
                 'currentContent' => $currentContent,
             )
-        ));
+        ))->setCharset('UTF-8');
     }
 
     /**
-     * @param int     $startObLevel
+     * @param int $startObLevel
      *
      * @return string
      */
@@ -93,7 +93,7 @@ class ExceptionController
     /**
      * @param Request $request
      * @param string  $format
-     * @param int     $code       An HTTP response status code
+     * @param int     $code          An HTTP response status code
      * @param bool    $showException
      *
      * @return TemplateReferenceInterface
